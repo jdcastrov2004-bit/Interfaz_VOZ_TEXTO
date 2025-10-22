@@ -12,13 +12,9 @@ from gtts import gTTS
 from googletrans import Translator
 
 
-# =========================
-# UI — Encabezados bacanos
-# =========================
 st.title("🎧 TRADUCTOR · Voz → Texto → Audio")
 st.subheader("Escucho lo que quieras traducir y te lo devuelvo hablado 😎")
 
-# Imagen (déjala como la tienes)
 image = Image.open('traductor.jpg')
 st.image(image, width=300, caption="Interfaces multimodales en acción")
 
@@ -35,7 +31,6 @@ with st.sidebar:
 
 st.write("Toca el botón y habla lo que quieres traducir:")
 
-# Botón de escucha (Bokeh + Web Speech API)
 stt_button = Button(label=" Escuchar  🎤", width=300, height=50)
 stt_button.js_on_event("button_click", CustomJS(code="""
     var recognition = new webkitSpeechRecognition();
@@ -65,14 +60,10 @@ result = streamlit_bokeh_events(
     debounce_time=0
 )
 
-# =========================
-# Captura y edición de texto
-# =========================
 captured_text = ""
 if result and "GET_TEXT" in result:
     captured_text = result.get("GET_TEXT", "") or ""
 
-# Área para que el usuario edite o pegue texto
 texto_input = st.text_area(
     "📝 Texto detectado (puedes editarlo o pegar tu propio texto):",
     value=captured_text,
@@ -80,9 +71,7 @@ texto_input = st.text_area(
     placeholder="Aquí aparecerá lo que dijiste… o pega tu texto manualmente."
 )
 
-# =========================
-# Configuración de idiomas y acento
-# =========================
+
 st.markdown("### 🌍 Configuración de idiomas")
 
 language_options = ["Inglés", "Español", "Bengali", "Coreano", "Mandarín", "Japonés"]
@@ -122,15 +111,11 @@ tld_map = {
 english_accent = st.selectbox("Selecciona el acento", accent_options, index=0)
 tld = tld_map[english_accent]
 
-# =========================
-# Traducción y TTS
-# =========================
 translator = Translator()
 st.markdown("### 🔊 Texto a audio")
 
 display_output_text = st.checkbox("Mostrar el texto traducido", value=True)
 
-# Asegura carpeta temporal
 os.makedirs("temp", exist_ok=True)
 
 def safe_filename(s: str, fallback: str = "audio"):
@@ -145,7 +130,6 @@ def text_to_speech(input_language, output_language, text, tld):
     trans_text = translation.text
     file_stub = safe_filename(text) or "audio"
     file_path = f"temp/{file_stub}.mp3"
-    # Si no es inglés, gTTS ignora tld; lo dejamos por compatibilidad cuando sea 'en'
     tts = gTTS(trans_text, lang=output_language, tld=tld, slow=False)
     tts.save(file_path)
     return file_stub, trans_text, file_path
@@ -172,9 +156,7 @@ if convert:
         except Exception as e:
             st.error(f"Ocurrió un problema al generar el audio: {e}")
 
-# =========================
-# Limpieza de archivos viejos
-# =========================
+
 def remove_files(n_days: int):
     mp3_files = glob.glob("temp/*.mp3")
     if not mp3_files:
