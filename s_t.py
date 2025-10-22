@@ -19,7 +19,7 @@ st.title("🎧 TRADUCTOR · Voz → Texto → Audio")
 st.subheader("Escucho lo que quieras traducir y te lo devuelvo hablado 😎")
 
 # Imagen (déjala como la tienes)
-image = Image.open('traductor.jp')
+image = Image.open('traductor.jpg')
 st.image(image, width=300, caption="Interfaces multimodales en acción")
 
 with st.sidebar:
